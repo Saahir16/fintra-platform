@@ -63,11 +63,18 @@ def sales_tax_exposure(state: str, revenue: float, transactions: int):
     elif close_to_limit:
         return {"status": "WARNING", "msg": f"getting close ot nexus in {state}."}
     return {"status": "CLEAR", "msg": "no tax exposure yet"}
+@app.get("/governance/history")
+def get_governance_history():
+    return {
+        "organization": "Fintra",
+        "logs": len(audit_database), #from the mock audit database
+        "history": audit_database[::-1]
+    }
 @app.get("/tax/exposure")
 def get_sales_tax_exposure(state: str = "AZ", revenue: float = 0.0, transactions: int = 0): # getting the alerts as an owner
     data_output = sales_tax_exposure(state, revenue, transactions)
     audit_service.logging_action( # triggering the logging
-        user_role="System", module="Sales Tax", action_type="Checking if nexus exposed or not", evidence={"revenue": revenue, "transactions": transactions, "state": state}, output=data+output["status"]
+        user_role="System", module="Sales Tax", action_type="Checking if nexus exposed or not", evidence={"revenue": revenue, "transactions": transactions, "state": state}, output=data_output["status"]
     )
     return data_output
 # --------------------------------------------------
