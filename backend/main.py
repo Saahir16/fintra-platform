@@ -48,7 +48,11 @@ def compliance_limit(investor_type: str, amount: float):
     
 @app.get("/compliance/signal")
 def compliance_signal(status: str = "non accredited", amount: float = 0.0):
-    return compliance_limit(status, amount)
+    data_output = compliance_limit(status, amount)
+    audit_service.logging_action( #compliance signals logged
+        user_role="System", module="Compliance", action_type="Checking limit of investor", evidence={"status": status, "amount": amount}, output=data_output["signal"]
+    )
+    return data_output
 # --------------------------------------------------
 # epic 7 story with the sales tax exposure stuff
 # --------------------------------------------------
