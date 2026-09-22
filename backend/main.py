@@ -1,9 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime
-import hashlib
-import json
-import uuid
 
 # Import routers
 from decisions.routes import router as decisions_router
@@ -13,7 +9,6 @@ from decisions.routes import router as decisions_router
 # --------------------------------------------------
 
 app = FastAPI(title="Fintra API")
-audit_database = [] # database mock for now to store logs
 # --------------------------------------------------
 # CORS Configuration
 # --------------------------------------------------
@@ -47,7 +42,7 @@ def compliance_limit(investor_type: str, amount: float):
             "signal": "Red flag", "rule": "Reg CF limit past", "action": "Put into audit trail"
         }
     return {"signal": "Green", "rule": "Compliant"}
-    
+
 @app.get("/compliance/signal")
 def compliance_signal(status: str = "non accredited", amount: float = 0.0):
     data_output = compliance_limit(status, amount)
@@ -110,3 +105,4 @@ def root():
 # --------------------------------------------------
 
 app.include_router(decisions_router)
+app.include_router(growth_router, prefix="/decisions", tags=["growth"])
