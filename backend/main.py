@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import routers
-from decisions.routes import router as decisions_router
+from backend.decisions.routes import router as decisions_router
+from backend.decisions.growth_agent import router as growth_router
+from backend.decisions.campaign_stuff import router as campaign_router
 
 # --------------------------------------------------
 # Create app
@@ -104,5 +106,6 @@ def root():
 # Register Routers
 # --------------------------------------------------
 
-app.include_router(decisions_router)
+app.include_router(decisions_router, prefix="/decisions", tags=["decisions"])
 app.include_router(growth_router, prefix="/decisions", tags=["growth"])
+app.include_router(campaign_router, prefix="/decisions", tags=["campaigns"])
