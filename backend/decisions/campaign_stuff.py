@@ -4,6 +4,7 @@ from datetime import datetime
 import uuid
 import hashlib
 from typing import Dict, Any, List, Optional
+from backend.decisions.spending_cap import evaluate_spend_request
 
 router = APIRouter()
 
@@ -120,6 +121,10 @@ def dispatch_campaign_to_channel(dispatch_req: DispatchRequest):
         "dispatch_time": dispatch_timestamp,
         "audit_event": event_log
     }
+
+    evaluate_result = evaluate_spend_request(owner_id="default_owner", proposed_budget=payload.allocated_budget)
+    if not evaluate_result["allowed"]:
+        raise HTTPException(status_code=400, detail=eval_result["reason"])
 
 @router.get("/campaigns/audit-logs")
 def get_campaign_audit_logs():

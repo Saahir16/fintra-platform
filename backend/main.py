@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.decisions.routes import router as decisions_router
 from backend.decisions.growth_agent import router as growth_router
 from backend.decisions.campaign_stuff import router as campaign_router
+from backend.decisions.spending_cap import router as spend_guard_router
 
 # --------------------------------------------------
 # Create app
@@ -109,3 +110,4 @@ def root():
 app.include_router(decisions_router, prefix="/decisions", tags=["decisions"])
 app.include_router(growth_router, prefix="/decisions", tags=["growth"])
 app.include_router(campaign_router, prefix="/decisions", tags=["campaigns"])
+app.include_router(spend_guard_router, prefix="/decisions", tags=["spend-guard"])
